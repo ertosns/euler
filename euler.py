@@ -56,6 +56,65 @@ def prime(n):
         i+=6
     return True
 
+# time complexity O(N)
+def ertosns(N):
+    P = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
+    p0 = P[0]
+    plen = len(P)
+    plast = P[len(P)-1]
+    plimit = p0*plast+1
+    S = [True]*N
+    for i in range(1, N/2):
+        S[i*2-1] = False
+    bound = 0
+    pb = int(math.log(p0, plast))
+    O_pb = 1
+    index = 1
+    res = 1
+    while plast<N:
+        shift = bound
+
+        for Pi in P[:bound+1]: #old primes multiplicative combination with repetition.
+            for power in range(O_pb, pb+1):
+                for Pj in P[shift+1:]:
+                    res = int(math.pow(Pi, power))*Pj
+                    if (res>=N):
+                        break
+                    S[res-1] = False
+                if int(math.pow(pi, power))>=N: #primes powers
+                    continue
+                S[int(math.pow(pi, power))-1] = False
+                shift+=1
+                
+        for Pi in P[bound:]: #new primes multiplicative combination with repetition.
+            for power in range(1, pb+1):
+                for Pj in P[shift+1:]:
+                    res = int(math.pow(Pi, power))*Pj
+                    if (res>=N):
+                        break
+                    S[res-1] = False
+                if int(math.pow(Pi, power))>=N: #new powers
+                    continue
+                S[int(math.pow(Pi, power))-1] = False
+                shift+=1
+
+        index = plast-1
+        for pot in S[index: plimit]:
+            if pot:
+                P+=[index+1]
+            index+=1
+        
+        bound = plen-1
+        plen = len(P)
+        plast = P[plen-1]
+        plimit = p0*plast+1
+        if plimit>=N:
+            plimit = N-1
+        O_pb=pb
+        pb = (int(math.log(plast, p0)))
+        
+    return P
+                  
 #sieve of erathostenes
 #Complexity: O(Nlog(N)log(N))
 #memorty: O(N)
@@ -180,7 +239,8 @@ def has_ndig_factors(N, w):
 
 #--testing--#
 def test():
-    eratosthenes_test()
+    #eratosthenes_test()
+    print ertosns(50)
 
 #--analysis--#
 
@@ -269,6 +329,7 @@ def euler6():
     for a0 in range(t):
         N = int(raw_input())
         print int(math.pow(N*(N+1)/2, 2))-(N*(N+1)*(2*N+1)/6)
+
 #get nth prime
 def euler7():
     t = int(input())
@@ -402,8 +463,8 @@ def euler193():
     print sfcount
 
 #-----------------#
-#test()
-euler193()
+test()
+#euler193()
 
 #update problems with complexity.
 #write recommendations
