@@ -56,7 +56,9 @@ def prime(n):
         i+=6
     return True
 
+# illuminate non-primes by nonlinear combinations of initial prime list.
 # time complexity O(N)
+# below non working example of two multiplicatives, how achieve arbitrary level?
 def ertosns(N):
     P = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
     p0 = P[0]
@@ -64,57 +66,68 @@ def ertosns(N):
     plast = P[len(P)-1]
     plimit = p0*plast+1
     S = [True]*N
-    for i in range(1, N/2):
+    for i in range(1, int(N/2)+1):
         S[i*2-1] = False
     bound = 0
-    pb = int(math.log(p0, plast))
+    pb = int(math.log(plast, p0))
     O_pb = 1
-    index = 1
+    index = plast+1
     res = 1
-    while plast<N:
+    pw = 1
+    compl = True
+    
+    while compl:
         shift = bound
-
-        for Pi in P[:bound+1]: #old primes multiplicative combination with repetition.
+        for Pi in P[:bound+1]: #old
             for power in range(O_pb, pb+1):
+                pw = int(math.pow(Pi, power))
                 for Pj in P[shift+1:]:
-                    res = int(math.pow(Pi, power))*Pj
-                    if (res>=N):
-                        break
-                    S[res-1] = False
-                if int(math.pow(pi, power))>=N: #primes powers
-                    continue
-                S[int(math.pow(pi, power))-1] = False
-                shift+=1
-                
-        for Pi in P[bound:]: #new primes multiplicative combination with repetition.
+                    res = pw*Pj
+                    if res<N:
+                        S[res-1] = False
+                if pw<N and power>1: #primes powers
+                    S[pw-1] = False
+            shift+=1
+        shift = bound
+        for Pi in P[bound:]: #new
             for power in range(1, pb+1):
+                pw = int(math.pow(Pi, power))
                 for Pj in P[shift+1:]:
-                    res = int(math.pow(Pi, power))*Pj
-                    if (res>=N):
-                        break
-                    S[res-1] = False
-                if int(math.pow(Pi, power))>=N: #new powers
-                    continue
-                S[int(math.pow(Pi, power))-1] = False
-                shift+=1
-
-        index = plast-1
-        for pot in S[index: plimit]:
+                    if power==1 and Pi*Pj>N:
+                        compl = False
+                    res = pw*Pj
+                    if res<N:
+                        S[res-1] = False
+                if pw<N and power>1: #new powers
+                    S[pw-1] = False
+            shift+=1
+            
+        
+        for pot in S[plast: plimit]:
             if pot:
-                P+=[index+1]
+                P+=[index]
             index+=1
         
         bound = plen-1
+        oplen = plen
         plen = len(P)
         plast = P[plen-1]
+        index = plast+1
         plimit = p0*plast+1
         if plimit>=N:
             plimit = N-1
         O_pb=pb
         pb = (int(math.log(plast, p0)))
         
-    return P
-                  
+    return [1, 2]+P
+
+def ertosns_test():
+    primes = ertosns(100000)
+    for p in primes:
+        if not prime(p):
+            print 'not a prime '+str(p)
+            break
+
 #sieve of erathostenes
 #Complexity: O(Nlog(N)log(N))
 #memorty: O(N)
@@ -240,7 +253,7 @@ def has_ndig_factors(N, w):
 #--testing--#
 def test():
     #eratosthenes_test()
-    print ertosns(50)
+    ertosns_test()
 
 #--analysis--#
 
@@ -469,6 +482,8 @@ test()
 #update problems with complexity.
 #write recommendations
 #write list of used unproven theorems
+#use partition set count (bell number) fact in driving all combination of factors.
 #factors
 #radical factors
 #prime factors
+#ertosns above is uncomplete sieving by illumination of nonprimes by nonlinear combination of initial prime list, how calculate nonlinear combination?
