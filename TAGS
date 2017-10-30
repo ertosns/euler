@@ -1,0 +1,66 @@
+
+euler.py,746
+def mult(16,278
+def palindrome(25,643
+def prime_sieve(33,812
+def prime(44,1031
+def ertosns(62,1514
+def ertosns_test(124,3162
+def eratosthenes(134,3384
+def eratosthenes_test(148,3714
+def get_nth_prime(157,3948
+def get_nth_prime(180,4441
+def fermat_fact(206,5116
+def trial_division(222,5471
+def largest_prime_factor(229,5615
+def factorize(242,5848
+def has_ndig_factors(245,5892
+def test(254,6147
+def computational_time(261,6262
+def euler1(268,6455
+def euler2(281,6749
+def euler3(301,7171
+def euler4(307,7363
+def euler5(328,7904
+def euler6(340,8261
+def euler7(347,8431
+def euler8(353,8547
+def euler9(380,9233
+def euler10(395,9581
+def euler11(402,9739
+def euler12(434,10692
+def euler13(450,11120
+def euler193(458,11270
+
+euler.py,746
+def mult(16,278
+def palindrome(25,643
+def prime_sieve(33,812
+def prime(44,1031
+def ertosns(62,1514
+def ertosns_test(124,3162
+def eratosthenes(134,3384
+def eratosthenes_test(148,3714
+def get_nth_prime(157,3948
+def get_nth_prime(180,4441
+def fermat_fact(206,5116
+def trial_division(222,5471
+def largest_prime_factor(229,5615
+def factorize(242,5848
+def has_ndig_factors(245,5892
+def test(254,6147
+def computational_time(261,6262
+def euler1(268,6455
+def euler2(281,6749
+def euler3(301,7171
+def euler4(307,7363
+def euler5(328,7904
+def euler6(340,8261
+def euler7(347,8431
+def euler8(353,8547
+def euler9(380,9233
+def euler10(395,9581
+def euler11(402,9739
+def euler12(434,10692
+def euler13(450,11120
+def euler193(458,11270
