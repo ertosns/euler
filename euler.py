@@ -154,6 +154,30 @@ def eratosthenes_test():
             if prime(j+lb+1):
                 assert(sieve[j])
 
+#Complexity: O((N^2/2lnN) + (N^3/2(lnN)^2))
+def sieve(nth):
+    l = [2,3,5,7,11,13,17,19,23,29,31]     
+    if nth<len(l):
+        return l
+    sus = l[len(l)-1]
+    while len(l)<nth:
+        sus+=2 #insert wheel sieving.
+        floor = math.floor(sus**0.5)
+        for p in l:
+            if sus%p == 0:
+                break
+            if p>floor:
+                l.append(sus)
+                break
+    return l
+
+def sieve_test():
+    primes = sieve(100000)
+    for p in primes:
+        if not prime(p):
+            print('not a prime '+str(p))
+            break
+
 def get_nth_prime(n):
     primes = []
     nsqrt = int(n**0.5)
@@ -253,7 +277,8 @@ def has_ndig_factors(N, w):
 #--testing--#
 def test():
     #eratosthenes_test()
-    ertosns_test()
+    #ertosns_test()
+    sieve_test()
 
 #--analysis--#
 
