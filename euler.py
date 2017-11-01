@@ -13,6 +13,7 @@ uncompleted:
 '''
 import math
 
+prime_init = [2,3,5,7,11,13,17,19,23,29,31]
 def mult(nums):
     mul = 1
     for i in nums:
@@ -132,31 +133,17 @@ def ertosns_test():
 #Complexity: O(Nlog(N)log(N))
 #memorty: O(N)
 def eratosthenes(N):
-    if N[1]<1:
-        return []
-    rng = N[1]-N[0]+1
-    size = (rng)//2
-    sieve = [True]*size
-    limit = int(N[1]**0.5)
-    for i in range(N[0]+1, limit):
-        if sieve[i]:
-            val = 2*i+1
-            span = (size-1-i)//val
-            sieve[i+val-N[0]::val] = [False]*span
-    return sieve
+    pass
 
 def eratosthenes_test():
-    for i in range(1000):
-        i+=2
-        lb=int(math.sqrt(i))         
-        sieve = eratosthenes([lb,i])
-        for j in range (i-lb):
-            if prime(j+lb+1):
-                assert(sieve[j])
+    pass
 
-#Complexity: O((N^2/2lnN) + (N^3/2(lnN)^2))
-def sieve(nth):
-    l = [2,3,5,7,11,13,17,19,23,29,31]     
+
+''' 
+complexity: ?
+l (list of primes) should be passed as parameter for more than one use.
+'''
+def sieve(nth, l):
     if nth<len(l):
         return l
     sus = l[len(l)-1]
@@ -177,26 +164,6 @@ def sieve_test():
         if not prime(p):
             print('not a prime '+str(p))
             break
-
-def get_nth_prime(n):
-    primes = []
-    nsqrt = int(n**0.5)
-    ON = 0
-    N = n+nsqrt
-    sieve = eratosthenes([ON, N])
-    pcount = 1
-    prime = 1
-    while pcount<=n:
-        if sieve[prime-ON]:
-            primes+=[prime]
-            pcount+=1
-        prime+=2
-        if prime-ON >= len(sieve)-1:
-            ON = N
-            N = N+nsqrt
-            sieve = eratosthenes([ON, N])
-    return primes[n-1]
-
 
 '''
 #TODO replace primes with stream of bits
@@ -373,7 +340,9 @@ def euler7():
     t = int(input())
     for a0 in range(t):
         N = int(input())
-        print get_nth_prime(N)
+        if N>len(l):
+            sieve(N, prime_init)
+        print prime_init[N-1]
 
 def euler8():
     t = int(input())
@@ -419,10 +388,20 @@ def euler9():
                     
 def euler10():
     t = int(input())
+    Sum = []
+    slen = 0
     for a0 in range(t):
         N = int(input())
-        primes = prime_sieve(N, eratosthenes)
-        print sum(primes)
+            sieve(int(float(N)/math.log(N)), prime_init)
+            while prime_init[len(prime_init)-1]<N:
+                sieve(len(prime_init)*10, prime_init)
+        if N<len(Sum): #todo FIX
+            slen = len(Sum)
+            Sum+=[0]*(prime_init[len(prime_init)-1]-slen)
+            while slen < len(prime_init):
+                Sum[prime_init[i]:prime_init[i+1]]*(prime_init[i]+Sum[i-1])
+                slen+=1
+        print Sum[N-1]
 
 def euler11():
     mtrx = []
@@ -501,7 +480,8 @@ def euler193():
     print sfcount
 
 #-----------------#
-test()
+#test()
+euler10()
 #euler193()
 
 #update problems with complexity.
