@@ -13,7 +13,7 @@ uncompleted:
 '''
 import math
 
-prime_init = [2,3,5,7,11,13,17,19,23,29,31]
+prime_init = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
 def mult(nums):
     mul = 1
     for i in nums:
@@ -336,6 +336,7 @@ def euler6():
         print int(math.pow(N*(N+1)/2, 2))-(N*(N+1)*(2*N+1)/6)
 
 #get nth prime
+#reusability of generated primes is substantial.
 def euler7():
     t = int(input())
     for a0 in range(t):
@@ -385,23 +386,26 @@ def euler9():
                 break
             a+=1
         print(product)
-                    
+#just like euler7, but reusability of old work Sums solves the problem.
 def euler10():
     t = int(input())
-    Sum = []
+    prime_init = [3, 5, 7, 11, 13]
+    Sum = [0, 0, 2, 5, 5, 10, 10, 17, 17, 17, 17, 28, 28] #under 13
     slen = 0
+    OP = 1
+    N = 1
     for a0 in range(t):
         N = int(input())
-            sieve(int(float(N)/math.log(N)), prime_init)
-            while prime_init[len(prime_init)-1]<N:
-                sieve(len(prime_init)*10, prime_init)
-        if N<len(Sum): #todo FIX
-            slen = len(Sum)
-            Sum+=[0]*(prime_init[len(prime_init)-1]-slen)
-            while slen < len(prime_init):
-                Sum[prime_init[i]:prime_init[i+1]]*(prime_init[i]+Sum[i-1])
-                slen+=1
-        print Sum[N-1]
+        OP = len(prime_init)-1
+        sieve(int(float(N)/math.log(N)), prime_init)
+        while prime_init[len(prime_init)-1]<=N:
+            sieve(len(prime_init)*10, prime_init)
+        if len(Sum) <= prime_init[len(prime_init)-1]:
+            while (OP+1)<len(prime_init):
+                Sum += [Sum[len(Sum)-1]+prime_init[OP]]* \
+                       (prime_init[OP+1]-prime_init[OP])
+                OP+=1
+        print Sum[N]
 
 def euler11():
     mtrx = []
@@ -458,31 +462,29 @@ def euler13():
         sum+=int(input())
     print str(sum)[0:10]
 
-# complexity O(N**2/lnN)
+#number of primes is huge, so segmented sieve has to be used.
 def euler193():
     args = [int(i) for i in raw_input().split()]
     N = args[0]
-    K = args[1]
-    primes = prime_sieve(N, eratosthenes)[1:]
-    sf = [True]*N #i*p**k == j*p`**k --> (i/j)**(1/k)*p = p`
-    pk = 0
-    for p in primes:
-        pk = p**k
-        i = 1
-        while i*pk<=N:
-            sf[i*pk] = False
-            i+=1
-
-    sfcount = 0
-    for num in sf:
-        if num:
-            sfcount+=1
-    print sfcount
+    pf = N
+    K = args[1]    
+    primes = sieve(int(N/math.log(N)), prime_init)
+    while primes[len(primes)-1]<N:
+        sieve(len(prime_init)*10, prime_init)
+    for p in primes:         
+        k = K
+        while True:
+            if math.pow(p, k)>N:
+                break
+            pf-=1
+            k+=1
+        if k==K:
+            break
+    print pf
 
 #-----------------#
 #test()
-euler10()
-#euler193()
+euler193()
 
 #update problems with complexity.
 #write recommendations
