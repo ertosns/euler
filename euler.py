@@ -12,6 +12,7 @@ uncompleted:
 
 '''
 import math
+import time
 
 prime_init = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
 def mult(nums):
@@ -19,6 +20,15 @@ def mult(nums):
     for i in nums:
         mul*=i
     return mul
+
+def avg(l):
+    if not len(l):
+        return 0
+    i = 0
+    sum = 0
+    while i < len(l):
+        sum+=l[i++]
+    return float(sum)/i
 
 #time analysis, for several modes.
 #hardlimite|watchdog, analyis relation between speed, and process resources, it's application in limited systems like android.
@@ -143,7 +153,9 @@ def eratosthenes_test():
 complexity: ?
 l (list of primes) should be passed as parameter for more than one use.
 '''
-def sieve(nth, l):
+
+#todo update new name usage
+def pth_trial(nth, l):
     if nth<len(l):
         return l
     sus = l[len(l)-1]
@@ -158,8 +170,46 @@ def sieve(nth, l):
                 break
     return l
 
+def ntrial(N, l):
+    last = l[len(l)-1]
+    if N<last:
+        return l
+    while last<N:
+        last+=2 #insert wheel sieving.
+        floor = math.floor(last**0.5)
+        for p in l: #limit p_range
+            if last%p == 0:
+                break
+            if p>floor:
+                l.append(last)
+                break
+    return l
+
+def kthfreepower(N, k):
+    cfree = N
+    for n in range (2, N+1):
+        lim = n**(float(1)/k)
+        ntrial(lim, prime_sieve)
+        for p in prime_init:
+            if not n%int(math.pow(p, k)):
+                cfree-=1
+                break
+    return cfree
+
+#not the use of global segmanted sieve in kthfreepower would corrrupt the calculations.
+def kthfreepower_test(li):
+    periods = []
+    for k in range(2, int(math.log(2, li))):
+        prime_init = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
+        start = time.time()
+        res = kthfreepower(li, k)
+        stop = time.time()
+        periods+=[stop-start]
+        #verify res.
+    return avg(periods)
+
 def sieve_test():
-    primes = sieve(100000)
+    primes = trial(100000, prime_init)
     for p in primes:
         if not prime(p):
             print('not a prime '+str(p))
@@ -244,9 +294,26 @@ def has_ndig_factors(N, w):
 #--testing--#
 def test():
     #eratosthenes_test()
-    #ertosns_test()
+    #ertosns_test()def avg(l):
+    i = 0
+    sum = 0
+    while i < len(l):
+        sum+=l[i++]
+    return float(sum)/i
     sieve_test()
 
+#todo grenade dogwatch.
+def complexity():
+    L = [1, 2, 3] #updated with varied lengths
+    P = []
+    O = []
+    for l in L:
+        P += [kthfreepower_test(l)]
+    for i in range(len(L)):
+        O+=[math.log(float(P[i+1])/P[i], float(L[i+1])/L[i])]
+        i+=1
+    return avg(O)
+    
 #--analysis--#
 
 #TOOD how receieve, doted-args in python?
@@ -342,7 +409,7 @@ def euler7():
     for a0 in range(t):
         N = int(input())
         if N>len(l):
-            sieve(N, prime_init)
+            trial(N, prime_init)
         print prime_init[N-1]
 
 def euler8():
@@ -397,9 +464,9 @@ def euler10():
     for a0 in range(t):
         N = int(input())
         OP = len(prime_init)-1
-        sieve(int(float(N)/math.log(N)), prime_init)
+        trial(int(float(N)/math.log(N)), prime_init)
         while prime_init[len(prime_init)-1]<=N:
-            sieve(len(prime_init)*10, prime_init)
+            trial(len(prime_init)*10, prime_init)
         if len(Sum) <= prime_init[len(prime_init)-1]:
             while (OP+1)<len(prime_init):
                 Sum += [Sum[len(Sum)-1]+prime_init[OP]]* \
@@ -461,30 +528,20 @@ def euler13():
     for a0 in range(t0):
         sum+=int(input())
     print str(sum)[0:10]
-
+    
 #number of primes is huge, so segmented sieve has to be used.
 def euler193():
     args = [int(i) for i in raw_input().split()]
     N = args[0]
     pf = N
     K = args[1]    
-    primes = sieve(int(N/math.log(N)), prime_init)
-    while primes[len(primes)-1]<N:
-        sieve(len(prime_init)*10, prime_init)
-    for p in primes:         
-        k = K
-        while True:
-            if math.pow(p, k)>N:
-                break
-            pf-=1
-            k+=1
-        if k==K:
-            break
-    print pf
+    print kthfreepower(N, K)
 
 #-----------------#
 #test()
-euler193()
+#complexity()
+#euler193()
+ntrial(int(input()), prime_init)
 
 #update problems with complexity.
 #write recommendations
