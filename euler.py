@@ -9,30 +9,27 @@ guidlines:
 
 uncompleted:
 - 7, fails the last two  cases, after trying eratosthenes sieve, and current solution with different variations,
-
 '''
+
 import math
 import time
+import random
 
 prime_init = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
+
+    
+def random_list(N, r):
+    L = []
+    for i in range(r):
+        L += [int(N*random.random())]
+    return L
 def mult(nums):
     mul = 1
     for i in nums:
         mul*=i
     return mul
-
 def avg(l):
-    if not len(l):
-        return 0
-    i = 0
-    sum = 0
-    while i < len(l):
-        sum+=l[i++]
-    return float(sum)/i
-
-#time analysis, for several modes.
-#hardlimite|watchdog, analyis relation between speed, and process resources, it's application in limited systems like android.
-#TODO create regression test for computational complexity, given  complexity as equation, and input validate implementation.
+    return float(sum(l))/len(l) if len(l)>0 else 0
 def palindrome(int_p):
     str_p = str(int_p)
     l = len(str_p)
@@ -40,22 +37,25 @@ def palindrome(int_p):
         if str_p[i] != str_p[l-i-1]:
             return False
     return True
-
+'''
+supplied with algo which retruns sieve as stream of booleans
+N is sieve limit
+return the actual numbers
+'''
 def prime_sieve(N, algo):
     pcount = 1
     prime = 1
     primes = []
-    for index in algo([0, N]):
+    for index in algo(N):
         if index:
             primes+=[prime]
             pcount+=1
         prime+=1             
     return primes
-
 def prime(n):
     if n < 1:
         return False
-    elif n<=3 :
+    elif n<=3:
         return True
     elif not n%2 or not n%3:
         return False
@@ -66,7 +66,6 @@ def prime(n):
             return False
         i+=6
     return True
-
 # illuminate non-primes by nonlinear combinations of initial prime list.
 # time complexity O(N)
 # below non working example of two multiplicatives, how achieve arbitrary level?
@@ -131,29 +130,22 @@ def ertosns(N):
         pb = (int(math.log(plast, p0)))
         
     return [1, 2]+P
-
-def ertosns_test():
-    primes = ertosns(100000)
-    for p in primes:
-        if not prime(p):
-            print 'not a prime '+str(p)
-            break
-
 #sieve of erathostenes
-#Complexity: O(Nlog(N)log(N))
+#Complexity: O(Nloglog(N))
 #memorty: O(N)
 def eratosthenes(N):
-    pass
-
-def eratosthenes_test():
-    pass
-
-
+    L = [True]*(N+1)
+    for n in range(1, int((N+1)**0.5)):
+        if not L[n]:
+            continue
+        i = n
+        while i*n<=N:
+            L[i*n] = False
+            i+=1
+    return L
 ''' 
-complexity: ?
 l (list of primes) should be passed as parameter for more than one use.
 '''
-
 #todo update new name usage
 def pth_trial(nth, l):
     if nth<len(l):
@@ -169,7 +161,6 @@ def pth_trial(nth, l):
                 l.append(sus)
                 break
     return l
-
 def ntrial(N, l):
     last = l[len(l)-1]
     if N<last:
@@ -184,64 +175,16 @@ def ntrial(N, l):
                 l.append(last)
                 break
     return l
-
 def kthfreepower(N, k):
     cfree = N
     for n in range (2, N+1):
         lim = n**(float(1)/k)
-        ntrial(lim, prime_sieve)
+        ntrial(lim, prime_init)
         for p in prime_init:
             if not n%int(math.pow(p, k)):
                 cfree-=1
                 break
     return cfree
-
-#not the use of global segmanted sieve in kthfreepower would corrrupt the calculations.
-def kthfreepower_test(li):
-    periods = []
-    for k in range(2, int(math.log(2, li))):
-        prime_init = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
-        start = time.time()
-        res = kthfreepower(li, k)
-        stop = time.time()
-        periods+=[stop-start]
-        #verify res.
-    return avg(periods)
-
-def sieve_test():
-    primes = trial(100000, prime_init)
-    for p in primes:
-        if not prime(p):
-            print('not a prime '+str(p))
-            break
-
-'''
-#TODO replace primes with stream of bits
-#still fails the last two cases!
-def get_nth_prime(n):
-    primes = [2,3]
-    cprime = len(primes)
-    primes+=[0 for i in range(n)]
-    prime = 5
-    ptwo=True
-    lprime = len(primes)
-    while cprime<n:
-        sqrt = math.sqrt(prime)
-        for p in primes:
-            if not prime%p:
-                break
-            if p>=sqrt:
-                primes[cprime]=prime
-                cprime+=1
-                break
-        
-        prime+= 2 if ptwo else 4 #illuminate 4/6 of numbers, multiples of 2,3.
-        ptwo = False if ptwo else True
-        if cprime==lprime:
-            primes+=[0 for i in range(math.sqrt(n))]
-            lprime = len(primes)
-    return primes[n-1]
-'''
 
 #fermat algorithm
 def fermat_fact(N):
@@ -257,14 +200,6 @@ def fermat_fact(N):
         if p2/p==p and (q+p) != N:
             fact.append([(q+p),(q-p)])
         q+=1
-    return fact
-
-#assumes N>1, return prime factors for N
-def trial_division(N):
-    fact = []
-    for p in prime_sieve(N, eratosthenes):
-        if not N%p:
-            fact.append(p)
     return fact
 
 def largest_prime_factor(N):
@@ -291,38 +226,8 @@ def has_ndig_factors(N, w):
             return True
     return False
 
-#--testing--#
-def test():
-    #eratosthenes_test()
-    #ertosns_test()def avg(l):
-    i = 0
-    sum = 0
-    while i < len(l):
-        sum+=l[i++]
-    return float(sum)/i
-    sieve_test()
-
-#todo grenade dogwatch.
-def complexity():
-    L = [1, 2, 3] #updated with varied lengths
-    P = []
-    O = []
-    for l in L:
-        P += [kthfreepower_test(l)]
-    for i in range(len(L)):
-        O+=[math.log(float(P[i+1])/P[i], float(L[i+1])/L[i])]
-        i+=1
-    return avg(O)
-    
-#--analysis--#
-
-#TOOD how receieve, doted-args in python?
-def computational_time(algorithm, inpts):
-    #fill profile, and run regression, for function coefficients.
-    pass
 
 #--problem panel--#
-
 #find the sum of all numbers below N multiple of 3,5.
 def euler1():
     t = int(raw_input())
@@ -537,11 +442,8 @@ def euler193():
     K = args[1]    
     print kthfreepower(N, K)
 
-#-----------------#
-#test()
-#complexity()
+
 #euler193()
-ntrial(int(input()), prime_init)
 
 #update problems with complexity.
 #write recommendations
@@ -551,3 +453,4 @@ ntrial(int(input()), prime_init)
 #radical factors
 #prime factors
 #ertosns above is uncomplete sieving by illumination of nonprimes by nonlinear combination of initial prime list, how calculate nonlinear combination?
+#implement statefull OOP
