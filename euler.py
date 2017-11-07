@@ -40,18 +40,22 @@ def palindrome(int_p):
 '''
 supplied with algo which retruns sieve as stream of booleans
 N is sieve limit
-return the actual numbers
+algo returned boolean sieve is assumed to be [1-N]
 '''
 def prime_sieve(N, algo):
     pcount = 1
-    prime = 1
-    primes = []
-    for index in algo(N):
-        if index:
-            primes+=[prime]
-            pcount+=1
-        prime+=1             
-    return primes
+    P = [1]
+    prime = 2
+    seg_N = 0
+    sh = 100000000
+    while seg_N<N:
+        seg_N += (N-seg_N) if (N-seg_N)<sh else sh
+        for index in algo(P, seg_N):
+            if index:
+                P+=[prime]
+                pcount+=1
+            prime+=1
+    return P
 def prime(n):
     if n < 1:
         return False
@@ -130,19 +134,31 @@ def ertosns(N):
         pb = (int(math.log(plast, p0)))
         
     return [1, 2]+P
-#sieve of erathostenes
+#segmanted sieve of erathostenes.
 #Complexity: O(Nloglog(N))
 #memorty: O(N)
-def eratosthenes(N):
-    L = [True]*(N+1)
-    for n in range(1, int((N+1)**0.5)):
-        if not L[n]:
+#return 1-based boolean sieve
+#P list of primes of last segment
+def eratosthenes(P, N):
+    pl = P[len(P)-1]
+    L = [True]*(N-pl)
+    
+    for p in P: #illuminate old primes mulipliers within (lp,N].
+        if p<2:
             continue
-        i = n
-        while i*n<=N:
-            L[i*n] = False
+        i = int(math.ceil(float(pl+1)/p))
+        while i*p <= N:
+            L[i*p-1-pl] = False
             i+=1
+    for n in range(pl+1, int((N)**0.5)+1):
+        if L[n-1-pl]:
+            i = n
+            while i*n<=N:
+                L[i*n-1-pl] = False
+                i+=1
     return L
+#TODO support segmentation in prime_sieve
+
 ''' 
 l (list of primes) should be passed as parameter for more than one use.
 '''
@@ -177,13 +193,22 @@ def ntrial(N, l):
     return l
 def kthfreepower(N, k):
     cfree = N
+    i = 0
+    plen = 0     
     for n in range (2, N+1):
+        i = 0
         lim = n**(float(1)/k)
-        ntrial(lim, prime_init)
-        for p in prime_init:
+        #ntrial(lim, prime_init)
+        #for p in prime_init:
+        while i < plen:
+            if i == plen-1:
+                while not len(prime_init)>plen:
+                    ntrial(len(prime_init)*10, prime_init)
+                plen = len(prime_init)
             if not n%int(math.pow(p, k)):
                 cfree-=1
                 break
+            i+=1
     return cfree
 
 #fermat algorithm
@@ -442,6 +467,10 @@ def euler193():
     K = args[1]    
     print kthfreepower(N, K)
 
+t0 = time.time()
+prime_sieve(int(input()), eratosthenes)
+t1 = time.time()
+print t1-t0
 
 #euler193()
 

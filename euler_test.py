@@ -43,9 +43,15 @@ def ertosns_test():
             break
 def eratosthenes_test():
     print('eratosthenes testing')
-    for i in range(1000):
-        for p in  euler.prime_sieve(i, euler.eratosthenes):
-            assert(euler.prime(p))
+    for n in range(1000):
+        primes = euler.prime_sieve(n, euler.eratosthenes)
+        for i in range(n+1):
+            if euler.prime(i):
+                for p in primes: #search sieve
+                    if p>i:
+                        raise Exception("eratosthones failed");
+                    if p==i:
+                        break
     print('eratosthenes test done!')
 def pth_trial_test():
     print('pth_trial testing')
