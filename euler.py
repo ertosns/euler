@@ -468,7 +468,11 @@ def euler193():
     print kthfreepower(N, K)
 
 t0 = time.time()
-prime_sieve(int(input()), eratosthenes)
+#prime_sieve(int(input()), eratosthenes)
+i = 0
+l = int(input())
+while i < l:
+    i+=1
 t1 = time.time()
 print t1-t0
 
