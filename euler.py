@@ -211,21 +211,30 @@ def kthfreepower(N, k):
             i+=1
     return cfree
 
-#fermat algorithm
+#return list L multiplicative partitions i.e {2.3} = > {{2,3}, {2*3}}
+def mult_combination(L):
+    pass
+    
+
+
+#fermat algorithm, N = q^2 - p^2 | q>p
+#TODO improve
 def fermat_fact(N):
-    fact = []
     if N < 1:
         return fact
     if not N%2:
         return [2, N/2]
     q = int(math.ceil(math.sqrt(N)))
-    while q<N:
-        p2 = q*q-N
-        p = int(math.sqrt(p2))
-        if p2/p==p and (q+p) != N:
-            fact.append([(q+p),(q-p)])
-        q+=1
-    return fact
+    p2 = N - q*q
+    p = math.floor(p2**0.5)
+    while q<N and not p**2==p2:
+        q +=1
+        p2 = N-q*q
+        p = math.floor(p2**0.5)    
+    return [q+p, q-p]
+
+#factors, prime factors
+#radical factors
 
 def largest_prime_factor(N):
     n=N
@@ -340,7 +349,7 @@ def euler7():
         N = int(input())
         if N>len(l):
             trial(N, prime_init)
-        print prime_init[N-1]
+        print prime_init[N-1]e
 
 def euler8():
     t = int(input())
@@ -438,19 +447,19 @@ def euler11():
 
 def euler12():
     t0 = int(input())
+    nk = 1
+    minus = 1
     for a0 in range(t0):
-        n = int(input())
-        primes = primes(n)
-        start = mult(primes)
-        N = int((math.sqrt(1-8*start)-1)/2) #positive quadratic formula
-        tr=N
-        while True:
-            div = divisors(tr) #todo, implement, return all divisors.
-            if len(div)>n:
-                print tr
-                break
-            tr+=N
-            N+=1
+        K = int(input())
+        for i in range(1, K):
+            if len(factors(2**(K-i)-1) == i:
+                minus = 1
+            elif len(factors(2**(K-i)+1) == i:
+                minus = 0
+            else:
+                continue
+            nk = i
+    print 2**nk-1 if minus else 2**nk+1
 
 def euler13():
     t0 = int(input())
@@ -467,23 +476,9 @@ def euler193():
     K = args[1]    
     print kthfreepower(N, K)
 
-t0 = time.time()
-#prime_sieve(int(input()), eratosthenes)
-i = 0
-l = int(input())
-while i < l:
-    i+=1
-t1 = time.time()
-print t1-t0
 
-#euler193()
+#ertosns above is uncomplete sieving by illumination of nonprimes by nonlinear combination of initial prime list, how calculate nonlinear combination?
 
 #update problems with complexity.
-#write recommendations
-#write list of used unproven theorems
-#use partition set count (bell number) fact in driving all combination of factors.
-#factors
-#radical factors
-#prime factors
-#ertosns above is uncomplete sieving by illumination of nonprimes by nonlinear combination of initial prime list, how calculate nonlinear combination?
+                     
 #implement statefull OOP
